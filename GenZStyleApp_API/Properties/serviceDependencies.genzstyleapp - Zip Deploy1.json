@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "apis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/GenZStyleAppAPIapi1234/apis/GenZStyleAppAPI123",
+      "type": "apis.azure"
+    }
+  }
+}
