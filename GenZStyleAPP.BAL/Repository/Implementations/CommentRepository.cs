@@ -71,7 +71,7 @@ namespace GenZStyleAPP.BAL.Repository.Implementations
             {
 
                 var comments = await _unitOfWork.CommentDAO.GetComments();
-                
+
 
                 /*return _mapper.Map<List<GetCommentResponse>>(post);*/
                 return comments;
@@ -85,6 +85,56 @@ namespace GenZStyleAPP.BAL.Repository.Implementations
             {
                 string error = ErrorHelper.GetErrorString(ex.Message);
                 throw new Exception(error);
+            }
+        }
+
+        public async Task<StyleCommentCount> GetMostCommonCommentStyleWithNullDescription()
+        {
+            try
+            {
+                // Lấy các style có Description là null và nhóm theo StyleName
+                var groupbyStyle = await _unitOfWork.StyleDAO.GetGroupedStylesWithNullDescription();
+
+                // Dictionary để lưu trữ số lượng comment cho mỗi phong cách
+                Dictionary<string, int> styleCommentCounts = new Dictionary<string, int>();
+
+                foreach (var styleGroup in groupbyStyle)
+                {
+                    var styleName = styleGroup.Key;
+                    var styleIds = styleGroup.Value.Select(s => s.StyleId).ToList();
+
+                    // Lấy danh sách PostId từ bảng StylePost dựa trên StyleId
+                    var postIds = await _unitOfWork.StylePostDAO.GetPostIdsByStyleIds(styleIds);
+
+                    // Lấy tất cả các comment của các bài post này
+                    var comments = await _unitOfWork.CommentDAO.GetCommentsByPostIds(postIds);
+
+                    // Đếm số lượng comment cho phong cách này
+                    int commentCount = comments.Count;
+
+                    // Cập nhật số lượng comment cho phong cách trong dictionary
+                    if (styleCommentCounts.ContainsKey(styleName))
+                    {
+                        styleCommentCounts[styleName] += commentCount;
+                    }
+                    else
+                    {
+                        styleCommentCounts[styleName] = commentCount;
+                    }
+                }
+
+                // Tìm phong cách có số lượng comment nhiều nhất
+                var mostCommonStyle = styleCommentCounts.OrderByDescending(x => x.Value).FirstOrDefault();
+
+                return new StyleCommentCount
+                {
+                    StyleName = mostCommonStyle.Key,
+                    CommentCount = mostCommonStyle.Value
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 

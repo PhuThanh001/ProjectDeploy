@@ -28,13 +28,19 @@ namespace GenZStyleApp_API.Controllers
             List<GetCommentResponse> result = await _commentRepository.GetCommentByPostId(PostId);
             return Ok(result);
         }
-        [HttpGet("odata/GetAllComment")]
+        [HttpGet("odata/GetMostCommonCommentStyle")]
         public async Task<IActionResult> GetAllComments()
         {
-            List<Comment> result = await _commentRepository.GetAllComment();
-            return Ok(result.Count);
+            try
+            {
+                StyleCommentCount result = await _commentRepository.GetMostCommonCommentStyleWithNullDescription();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
-
         [EnableQuery]
         [HttpPost("odata/Comment/{key}")]
 

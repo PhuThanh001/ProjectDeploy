@@ -108,6 +108,12 @@ namespace GenZStyleApp.DAL.DAO
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<List<Comment>> GetCommentsByPostIds(List<int> postIds)
+        {
+            return await _dbContext.Comments
+                .Where(c => postIds.Contains(c.PostId))
+                .ToListAsync();
+        }
 
     }
 }

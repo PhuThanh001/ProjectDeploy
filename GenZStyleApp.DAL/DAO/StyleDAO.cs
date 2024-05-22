@@ -41,6 +41,27 @@ namespace GenZStyleApp.DAL.DAO
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<Dictionary<string, List<Style>>> GetGroupedStylesWithNullDescription()
+        {
+            try
+            {
+                // Lấy danh sách các Style có Description là null
+                var stylesWithNullDescription = await _dbContext.Styles
+                    .Where(s => s.Description == null)
+                    .ToListAsync();
+
+                // Nhóm các Style theo StyleName
+                var groupedStyles = stylesWithNullDescription
+                    .GroupBy(s => s.StyleName)
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                return groupedStyles;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         #region DeleteStylePost
         public async Task DeleteStyle(Style style)
         {

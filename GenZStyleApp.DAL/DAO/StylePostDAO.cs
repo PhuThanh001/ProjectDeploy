@@ -41,7 +41,14 @@ namespace GenZStyleApp.DAL.DAO
                 throw new Exception(ex.Message);
             }
         }
-
+        public async Task<List<int>> GetPostIdsByStyleIds(List<int> styleIds)
+        {
+            return await _dbContext.StylePosts
+                .Where(sp => styleIds.Contains(sp.StyleId))
+                .Select(sp => sp.PostId)
+                .Distinct()
+                .ToListAsync();
+        }
         #region DeleteStylePost
         public async Task DeleteStylePost(StylePost stylePost)
         {

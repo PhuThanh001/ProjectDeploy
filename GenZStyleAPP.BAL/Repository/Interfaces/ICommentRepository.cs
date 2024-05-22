@@ -20,6 +20,7 @@ namespace GenZStyleAPP.BAL.Repository.Interfaces
 
         public Task<List<Comment>> GetAllComment();
 
+        public Task<StyleCommentCount> GetMostCommonCommentStyleWithNullDescription();
 
 
 
