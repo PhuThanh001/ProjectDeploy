@@ -374,5 +374,21 @@ namespace GenZStyleApp_API.Controllers
                 Status = "Delete Post Success"
             });
         }
+        [HttpGet("odata/Posts/Active/TopLikePost")]
+        [EnableQuery]
+        public async Task<IActionResult> GetTopLikePosts()
+        {
+            try
+            {
+                List<GetPostResponse> topPosts = await _postRepository.GetActivePostsByLike();
+                return Ok(topPosts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+
+        }
     }
 }

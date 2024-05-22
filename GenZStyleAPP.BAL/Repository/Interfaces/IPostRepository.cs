@@ -30,5 +30,8 @@ namespace GenZStyleAPP.BAL.Repository.Interfaces
         public Task<GetPostResponse> BanPostAsync(int postId, HttpContext httpContext);
         public Task<List<GetPostResponse>> GetListPostStyleName(string? stylename);
         public Task DeletePostById(int id);
+
+        public Task<List<GetPostResponse>> GetActivePostsByLike();
+
     }
 }

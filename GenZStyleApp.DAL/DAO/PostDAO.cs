@@ -243,6 +243,26 @@ namespace GenZStyleApp.DAL.DAO
             }
         }
         #endregion
+        // List các bài post có nhiều lượt like 
+        public async Task<List<Post>> GetTopActivePostsOrderedByLikes()
+        {
+            try
+            {
+                return await _dbContext.Posts
+                    .AsNoTracking()
+                    .Include(e => e.Likes).ThenInclude(l => l.Account).ThenInclude(a => a.User)
+                    .Include(i => i.Account).ThenInclude(a => a.User)
+                    .Include(u => u.HashPosts).ThenInclude(x => x.Hashtag)
+                    .Where(p => p.Status == true)
+                    .OrderByDescending(p => p.Likes.Count(l => l.isLike))
+                    .Take(5) // Chỉ lấy top 5 bài post
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }
